@@ -1,10 +1,16 @@
 from transcribe.vosk import VoskASR
 
+from logging import getLogger
+
+logger = getLogger("RobotASR")
+
 class RobotASR:
     engine = None
 
     def __init__(self, provider='vosk') -> None:
-        
+
+        logger.info("Initializing Robot ASR...")
+
         self.engine = VoskASR()
 
     def audio_to_text(self, audio_data) -> str:

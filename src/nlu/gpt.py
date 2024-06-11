@@ -2,6 +2,10 @@ from nlu.interface import NLUInterface
 from openai import OpenAI
 import os
 
+from logging import getLogger
+
+logger = getLogger("NLUOpenAI")
+
 class NLUOpenAI(NLUInterface):
     client = None
     model_name = None
@@ -13,7 +17,11 @@ class NLUOpenAI(NLUInterface):
         self.client = OpenAI(api_key=os.getenv('OPENAI_KEY'))
         self.model_name = model_name
 
+        logger.info("Initialized NLU with OpenAI")
+
     def extract_object_and_color(self, text) -> tuple:
+        logger.info("Attempting to extract object and color...")
+        
         prompt = f"This is the text: {text}. \
                    Now from the text give me a targeted object and its color in this format: color,object. \
                    If no color is present, then 0,object. If no object is present, then 0,0"

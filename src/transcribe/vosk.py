@@ -5,6 +5,10 @@ import vosk
 import json
 import os
 
+from logging import getLogger
+
+logger = getLogger("VoskASR")
+
 class VoskASR(ASRInterface):
     sample_rate = None
     model_path = None
@@ -25,8 +29,12 @@ class VoskASR(ASRInterface):
 
         self.recognizer = vosk.KaldiRecognizer(vosk.Model(self.model_path), self.sample_rate)
 
+        logger.info("Initialized ASR with Vosk")
+
     def audio_to_text(self, audio_data) -> str:
-        self.recognizer.AcceptWaveForm(audio_data)
+        logger.info("Attempting to transcribe audio data...")
+
+        self.recognizer.AcceptWaveform(audio_data)
 
         result = json.loads(self.recognizer.FinalResult())
 
@@ -35,6 +43,8 @@ class VoskASR(ASRInterface):
         return text
 
     def recognize_from_mic(self, duration=5, channels=2) -> str:
+        logger.info(f"Recording audio ({duration} seconds) from microphone...")
+        
         audio_data = sd.rec(int(duration * self.sample_rate), samplerate=self.sample_rate, channels=channels, dtype='int16')
 
         sd.wait()
