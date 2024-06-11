@@ -42,9 +42,9 @@ class VoskASR(ASRInterface):
 
         return text
 
-    def recognize_from_mic(self, duration=5, channels=2) -> str:
+    def recognize_from_mic(self, duration, channels) -> str:
         logger.info(f"Recording audio ({duration} seconds) from microphone...")
-        
+
         audio_data = sd.rec(int(duration * self.sample_rate), samplerate=self.sample_rate, channels=channels, dtype='int16')
 
         sd.wait()

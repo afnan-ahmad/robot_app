@@ -2,8 +2,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+import logging
+import sys
+
 from nlu import RobotNLU
 from transcribe import RobotASR
+
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 robot_nlu = RobotNLU()
 robot_asr = RobotASR()

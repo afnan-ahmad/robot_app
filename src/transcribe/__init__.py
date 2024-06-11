@@ -16,5 +16,5 @@ class RobotASR:
     def audio_to_text(self, audio_data) -> str:
         return self.engine.audio_to_text(audio_data)
     
-    def recognize_from_mic(self, duration=5, channels=2) -> str:
+    def recognize_from_mic(self, duration=5, channels=1) -> str:
         return self.engine.recognize_from_mic(duration=duration, channels=channels)

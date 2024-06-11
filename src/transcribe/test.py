@@ -7,7 +7,7 @@ SAMPLE_RATE = 44100  # Hz
 while True:
     # Record audio
     print("Recording...")
-    audio_data = sd.rec(int(DURATION * SAMPLE_RATE), samplerate=SAMPLE_RATE, channels=2, dtype='int16')
+    audio_data = sd.rec(int(DURATION * SAMPLE_RATE), samplerate=SAMPLE_RATE, channels=1, dtype='int16')
     sd.wait()  # Wait until recording is finished
     print("Recording finished.")
 
