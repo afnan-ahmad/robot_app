@@ -18,6 +18,8 @@ while True:
     text = robot_asr.recognize_from_mic(5)
     print('Recognized text:', text)
 
-    obj, color = robot_nlu.extract_object_and_color(text)
+    obj = robot_nlu.extract_object_and_color(text)
+
+    yolo_class = robot_nlu.find_most_similar_class(obj)
     
-    print(obj, color)
+    print(obj, yolo_class)
