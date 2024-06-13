@@ -10,7 +10,22 @@ class NLUOpenAI(NLUInterface):
     client = None
     model_name = None
     
-    def __init__(self, model_name='gpt-3.5-turbo') -> None:
+    def __init__(self, model_name, base_url, api_key) -> None:
+        if base_url:
+            self.initialize_local(model_name=model_name, base_url=base_url, api_key=api_key)
+        else:
+            self.initialize_openai(model_name=model_name)
+
+    def initialize_local(self, model_name, base_url, api_key) -> None:
+        self.client = OpenAI(
+            base_url=base_url,
+            api_key=api_key
+        )
+        self.model_name = model_name
+
+        logger.info("Initialized NLU with Local LLM at: ", base_url)
+
+    def initialize_openai(self, model_name) -> None:
         if 'OPENAI_KEY' not in os.environ:
             raise Exception("OPENAI_KEY not present in environment. Please specify it to use OpenAI.")
         
