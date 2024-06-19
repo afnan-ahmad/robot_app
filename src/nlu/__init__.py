@@ -36,4 +36,4 @@ class RobotNLU:
         if use_gpt:
             return self.engine.find_most_similar_word(self.YOLO_CLASSES_LIST, word)
         else:
-            return self.sbert.find_most_similar_word(self.YOLO_CLASSES_LIST, word)
+            return self.sbert.find_most_similar_word(word)
