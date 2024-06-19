@@ -7,7 +7,7 @@ from logging import getLogger
 logger = getLogger("NLUBERT")
 
 class NLUSBERT:
-    def __init__(self, word_list, similarity_threshold=0.7, model_name='all-MiniLM-L6-v2'):
+    def __init__(self, word_list, similarity_threshold=0.5, model_name='all-MiniLM-L6-v2'):
         self.model = SentenceTransformer(model_name)
         self.similarity_threshold = similarity_threshold
 
