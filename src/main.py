@@ -76,11 +76,11 @@ class AppState:
         
         obj = robot_nlu.extract_object_and_color(text)
 
-        self.target_class = robot_nlu.find_most_similar_class(obj)
+        self.yolo_class = robot_nlu.find_most_similar_class(obj)
 
     @property
     def target_class(self):
-        return self.target_class
+        return self.yolo_class
     
     @property
     def rotation(self):
