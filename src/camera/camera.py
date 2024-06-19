@@ -103,9 +103,9 @@ cv2.setMouseCallback(state.WIN_NAME, mouse_cb)
 
 def project(v):
     h, w = out.shape[:2]
-    view_aspect = float(h)/w
+    view_aspect = float(h) / w
     with np.errstate(divide='ignore', invalid='ignore'):
-        proj = v[:, :-1] / v[:, -1, np.newaxis] * (w*view_aspect, h) + (w/2.0, h/2.0)
+        proj = v[:, :-1] / v[:, -1, np.newaxis] * (w * view_aspect, h) + (w / 2.0, h / 2.0)
     znear = 0.03
     proj[v[:, 2] < znear] = np.nan
     return proj
@@ -121,7 +121,7 @@ def pointcloud(out, verts, texcoords, color, painter=True):
     else:
         proj = project(view(verts))
     if state.scale:
-        proj *= 0.5**state.decimate
+        proj *= 0.5 ** state.decimate
     h, w = out.shape[:2]
     j, i = proj.astype(np.uint32).T
     im = (i >= 0) & (i < h)
@@ -132,8 +132,8 @@ def pointcloud(out, verts, texcoords, color, painter=True):
         v, u = (texcoords[s] * (cw, ch) + 0.5).astype(np.uint32).T
     else:
         v, u = (texcoords * (cw, ch) + 0.5).astype(np.uint32).T
-    np.clip(u, 0, ch-1, out=u)
-    np.clip(v, 0, cw-1, out=v)
+    np.clip(u, 0, ch - 1, out=u)
+    np.clip(v, 0, cw - 1, out=v)
     out[i[m], j[m]] = color[u[m], v[m]]
 
 out = np.empty((480, 640, 3), dtype=np.uint8)
@@ -160,7 +160,8 @@ while True:
         results = model.predict(rotated_color_image)
         annotator = Annotator(rotated_color_image, line_width=2)
 
-        target = (0,0)
+        target = (0, 0)
+        target2 = (0, 0)
 
         if results[0].masks is not None:
             clss = results[0].boxes.cls.cpu().tolist()
@@ -181,23 +182,20 @@ while True:
 
                     print(f"Class: {names[int(cls)]}, Bounding Box: {bbox}")
 
-                    print(f"Points: {np.mean(points, axis=0)//2}")
+                    print(f"Points: {np.mean(points, axis=0) // 2}")
 
                     target = np.mean(points, axis=0) // 2
-                   
+
                     target = (int(target[0]), int(target[1]))
 
                     target2 = np.mean(points, axis=0)
                     target2 = (int(target2[0]), int(target2[1]))
-
-
 
         segmented_image = cv2.rotate(rotated_color_image, cv2.ROTATE_90_COUNTERCLOCKWISE)
 
         segmented_image = cv2.resize(segmented_image, (640, 480))
 
         depth_colormap = np.asanyarray(colorizer.colorize(depth_frame).get_data())
-
 
         if state.color:
             mapped_frame, color_source = color_frame, segmented_image
@@ -212,16 +210,19 @@ while True:
 
         verts = np.asanyarray(v).view(np.float32).reshape(-1, 3)
         texcoords = np.asanyarray(t).view(np.float32).reshape(-1, 2)
-        
 
         verts_copy = np.copy(verts).reshape((240, 320, 3))
         texcoords_copy = np.copy(texcoords).reshape((320, 240, 2))
 
-    
-        cv2.imshow('Verts', verts_copy[:,:,2])
-        print(verts_copy[240//2, 320//2])
+        cv2.imshow('Verts', verts_copy[:, :, 2])
+        print(verts_copy[240 // 2, 320 // 2])
 
+        target_x, target_y = target
+        depth_value = depth_image[target_y, target_x]
+        depth_point = rs.rs2_deproject_pixel_to_point(depth_intrinsics, [target_x, target_y], depth_value)
+        target_z = depth_point[2]
 
+        print(f"Target Coordinates (X, Y, Z): ({target_x}, {target_y}, {target_z})")
 
     now = time.time()
 
@@ -231,25 +232,23 @@ while True:
 
     dt = time.time() - now
 
-    cv2.setWindowTitle(state.WIN_NAME, f"RealSense ({w}x{h}) {1.0/dt:.2f}FPS ({dt*1000:.2f}ms) {'PAUSED' if state.paused else ''}")
+    cv2.setWindowTitle(state.WIN_NAME, f"RealSense ({w}x{h}) {1.0 / dt:.2f}FPS ({dt * 1000:.2f}ms) {'PAUSED' if state.paused else ''}")
 
     depth_colormap = cv2.resize(depth_colormap, (640, 480))
-    
+
     depth_colormap = cv2.rotate(depth_colormap, cv2.ROTATE_90_CLOCKWISE)
     cv2.circle(depth_colormap, target2, 2, (255, 0, 0), -1)
     cv2.imshow('Depth Image', depth_colormap)
-    
+
     cv2.imshow('Target', target)
     cv2.imshow(state.WIN_NAME, out)
     print(f"Target: {target}")
     color_image = segmented_image.copy()
     cv2.imshow('Color Image', segmented_image)
 
-
     color_image = cv2.rotate(color_image, cv2.ROTATE_90_CLOCKWISE)
     cv2.circle(color_image, target2, 2, (255, 0, 0), -1)
     cv2.imshow('Target', color_image)
-
 
     key = cv2.waitKey(1)
 
