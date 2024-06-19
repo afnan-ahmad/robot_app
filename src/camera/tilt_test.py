@@ -10,9 +10,24 @@ print(f'Robot is homed: {is_homed}')
 
 
 # Tilt the camera up and down
-r.head.get_joint.move_to('head_tilt', 0.49) # Up maximum tilt
-r.head.get_joint.move_to('head_tilt', -0.49) # Down maximum tilt
+r.head.move_to('head_tilt', 0.49) # Up maximum tilt
+r.push_command()
+r.wait_command()
+
+r.head.move_to('head_tilt', -0.49) # Down maximum tilt
+r.push_command()
+r.wait_command()
 
 # Pan the camera left and right
-r.head.get_joint.move_to('head_pan', 1.73) # Left maximum pan
-r.head.get_joint.move_to('head_pan', -1.73) # Right maximum pan
+
+r.head.move_to('head_pan', -.73) # left maximum pan
+r.push_command()
+r.wait_command()
+
+r.head.move_to('head_pan', -2.73) # right maximum pan
+r.push_command()
+r.wait_command()
+
+r.head.move_to('head_pan',-1.73) # center
+r.push_command()
+r.wait_command()
