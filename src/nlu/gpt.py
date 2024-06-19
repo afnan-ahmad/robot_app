@@ -37,19 +37,19 @@ class NLUOpenAI(NLUInterface):
     def extract_object_and_color(self, text) -> tuple:
         logger.info("Extracting object from the text...")
         
-        prompt = f"You are a word filter. \
-                   You can only reply in this format: object_name. \
-                   You will get a sentence and reply with the targeted object. \
-                   For example, if I ask, where is the bottle? You answer: bottle. \
-                   {text}"
+        prompt = f"This is the text: {text}. \
+                   Now from the text give me a targeted object and its color in this format: color,object. \
+                   If no color is present, then 0,object. If no object is present, then 0,0"
 
         chat_completion = self.client.chat.completions.create(
             model=self.model_name,
             messages=[{"role": "user", "content": prompt}])
         
         response_content = chat_completion.choices[0].message.content
+        
+        obj, color = response_content.split(',')
 
-        return response_content
+        return obj, color
     
     def find_most_similar_word(self, list, word):
         logger.info("Finding most similar word...")
