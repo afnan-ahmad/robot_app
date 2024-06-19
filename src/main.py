@@ -69,6 +69,19 @@ class AppState:
         self.pitch, self.yaw, self.distance = 0, 0, 2
         self.translation[:] = 0, 0, -1
 
+    def start_voice_input(self):
+        print('Recognizing from microphone... ')
+        text = robot_asr.recognize_from_mic(5)
+        print('Recognized text:', text)
+        
+        obj = robot_nlu.extract_object_and_color(text)
+
+        self.target_class = robot_nlu.find_most_similar_class(obj)
+
+    @property
+    def target_class(self):
+        return self.target_class
+    
     @property
     def rotation(self):
         Rx, _ = cv2.Rodrigues((self.pitch, 0, 0))
@@ -157,13 +170,7 @@ target_class = "cup"
 
 while True:
 
-    print('Recognizing from microphone... ')
-    text = robot_asr.recognize_from_mic(5)
-    print('Recognized text:', text)
-
-    obj = robot_nlu.extract_object_and_color(text)
-
-    target_class = robot_nlu.find_most_similar_class(obj)
+    target_class = state.target_class
 
     if not state.paused:
         frames = pipeline.wait_for_frames()
@@ -280,6 +287,8 @@ while True:
 
     if key == ord("r"):
         state.reset()
+    if key == ord("v"):
+        state.start_voice_input()
     if key == ord("p"):
         state.paused ^= True
     if key == ord("d"):
