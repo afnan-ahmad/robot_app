@@ -1,4 +1,5 @@
 from nlu.gpt import NLUOpenAI
+from nlu.sbert import NLUSBERT
 
 from logging import getLogger
 
@@ -30,3 +31,7 @@ class RobotNLU:
     
     def find_most_similar_class(self, word) -> str:
         return self.engine.find_most_similar_word(self.YOLO_CLASSES_LIST, word)
+
+    # def find_most_similar_class(self, word) -> str:
+    #     sbert_engine = NLUSBERT()
+    #     return sbert_engine.find_most_similar_word(self.YOLO_CLASSES_LIST, word)
