@@ -185,6 +185,7 @@ while True:
         annotator = Annotator(rotated_color_image, line_width=2)
 
         target = (0,0)
+        target2 = (0,0)
 
         if results[0].masks is not None:
             clss = results[0].boxes.cls.cpu().tolist()
