@@ -65,6 +65,8 @@ class AppState:
         self.scale = True
         self.color = True
 
+        self.yolo_class = 'cup' # Fallback class
+
     def reset(self):
         self.pitch, self.yaw, self.distance = 0, 0, 2
         self.translation[:] = 0, 0, -1
