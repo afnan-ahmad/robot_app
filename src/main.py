@@ -17,6 +17,15 @@ from ultralytics.utils.plotting import Annotator, colors
 import numpy as np
 import math
 import time
+import stretch_body.robot
+
+r = stretch_body.robot.Robot()
+
+did_startup = r.startup()
+print(f'Robot connected to hardware: {did_startup}')
+
+is_homed = r.is_homed()
+print(f'Robot is homed: {is_homed}')
 
 robot_nlu = RobotNLU()
 robot_asr = RobotASR()
@@ -261,6 +270,90 @@ while True:
         target_z = depth_point[2]
 
         print(f"Target Coordinates (X, Y, Z): ({target_x}, {target_y}, {target_z})")
+
+        if target_z < 1120 and target_z > 1000  and  target_x < 160 and target_x > 140 and  target_y < 230 and target_y > 210 and target_class == "cup":
+            print("Cup detected at the target location 1")
+            print("Moving the robot arm to the target location")
+            r.arm.move_to(0.3) 
+            r.lift.move_to(0.8)
+            r.push_command()
+            r.wait_command()
+
+            r.end_of_arm.move_to('wrist_pitch', 0)
+            r.end_of_arm.move_to('wrist_yaw', -.80)
+            r.push_command()
+            r.wait_command()
+
+            r.arm.move_to(0.4) 
+            r.push_command()
+            r.wait_command()
+
+            r.end_of_arm.move_to('stretch_gripper', 60)
+            r.push_command()
+            r.wait_command()
+
+            r.arm.move_to(0.43) 
+            r.push_command()
+            r.wait_command()
+
+            r.end_of_arm.move_to('stretch_gripper', 25)
+            r.push_command()
+            r.wait_command()
+
+            r.lift.move_to(0.9)
+            r.push_command()
+            r.wait_command()
+
+        if target_z < 870 and target_z > 850 and  target_x < 40 and target_x > 25 and target_y < 240 and target_y > 220 and target_class == "cup":
+            print("Cup detected at the target location 3")
+            print("Moving the robot arm to the target location")
+            r.arm.move_to(0.48) 
+            r.lift.move_to(0.8)
+            r.push_command()
+            r.wait_command()
+
+            r.end_of_arm.move_to('wrist_pitch', 0)
+            r.end_of_arm.move_to('wrist_yaw', -0.4)
+            r.push_command()
+            r.wait_command()
+
+            r.end_of_arm.move_to('stretch_gripper', 80)
+            r.push_command()
+            r.wait_command()
+
+            r.end_of_arm.move_to('stretch_gripper', 20)
+            r.push_command()
+            r.wait_command()
+
+            r.lift.move_to(1.3)
+            r.push_command()
+            r.wait_command()
+
+        if target_z < 1050 and target_z > 1020 and  target_x < 130 and target_x > 110 and target_y < 210 and target_y > 180 and target_class == "bottle":
+            print("Bottle detected at the target location 3")
+            print("Moving the robot arm to the target location")
+            r.arm.move_to(0.48) 
+            r.lift.move_to(0.8)
+            r.push_command()
+            r.wait_command()
+
+            r.end_of_arm.move_to('wrist_pitch', 0)
+            r.end_of_arm.move_to('wrist_yaw', -0.4)
+            r.push_command()
+            r.wait_command()
+
+            r.end_of_arm.move_to('stretch_gripper', 80)
+            r.push_command()
+            r.wait_command()
+
+            r.end_of_arm.move_to('stretch_gripper', 20)
+            r.push_command()
+            r.wait_command()
+
+            r.lift.move_to(1.3)
+            r.push_command()
+            r.wait_command()
+
         
 
 
