@@ -255,6 +255,14 @@ while True:
         cv2.imshow('Verts', verts_copy[:,:,2])
         print(verts_copy[240//2, 320//2])
 
+        target_x, target_y = target
+        depth_value = depth_image[target_y, target_x]
+        depth_point = rs.rs2_deproject_pixel_to_point(depth_intrinsics, [target_x, target_y], depth_value)
+        target_z = depth_point[2]
+
+        print(f"Target Coordinates (X, Y, Z): ({target_x}, {target_y}, {target_z})")
+        
+
 
 
     now = time.time()
