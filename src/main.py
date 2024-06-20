@@ -27,6 +27,29 @@ print(f'Robot connected to hardware: {did_startup}')
 is_homed = r.is_homed()
 print(f'Robot is homed: {is_homed}')
 
+# Tilt the camera up and down
+r.head.move_to('head_tilt', 0.49) # Up maximum tilt
+r.push_command()
+r.wait_command()
+
+r.head.move_to('head_tilt', -0.49) # Down maximum tilt
+r.push_command()
+r.wait_command()
+
+# Pan the camera left and right
+
+r.head.move_to('head_pan', -.95) # left maximum pan
+r.push_command()
+r.wait_command()
+
+r.head.move_to('head_pan', -2.18) # right maximum pan
+r.push_command()
+r.wait_command()
+
+r.head.move_to('head_pan',-1.74) # center
+r.push_command()
+r.wait_command()
+
 robot_nlu = RobotNLU()
 robot_asr = RobotASR()
 
@@ -74,7 +97,7 @@ class AppState:
         self.scale = True
         self.color = True
 
-        self.yolo_class = 'cup' # Fallback class
+        self.yolo_class = 'mountain' # Fallback class
 
     def reset(self):
         self.pitch, self.yaw, self.distance = 0, 0, 2
@@ -177,7 +200,7 @@ def pointcloud(out, verts, texcoords, color, painter=True):
 
 out = np.empty((480, 640, 3), dtype=np.uint8)
 
-target_class = "cup"
+target_class = None
 
 while True:
 
@@ -352,8 +375,15 @@ while True:
             r.lift.move_to(1.3)
             r.push_command()
             r.wait_command()
-
-        
+    
+    
+    r.end_of_arm.move_to('stretch_gripper', 70)
+    r.push_command()
+    r.wait_command()
+    
+    r.arm.move_to(0.2)
+    r.lift.move_to(0.8)
+    r.push_command()
 
 
 
